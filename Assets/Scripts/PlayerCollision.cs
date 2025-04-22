@@ -22,12 +22,12 @@ public class PlayerCollision : MonoBehaviour
         }
         else if (other.CompareTag("TakePoints"))
         {
-            points -= 30;
+            points -= 50;
             
         }
         else if (other.CompareTag("DoublePoints"))
         {
-            points *= 2;
+            points += 100;
             
         }
 
