@@ -1,70 +1,60 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public RectTransform movementBounds; // Assign the UI panel or canvas RectTransform
+
     private Rigidbody2D rb;
-    private bool isDropped = false;
-
-    private float screenLeftLimit;
-    private float screenRightLimit;
-    private float playerWidth;
-
-    private Vector3 startPosition; // store starting position
+    private RectTransform rectTransform;
+    private Vector2 movement;
+    private float halfWidth;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0;
+        rectTransform = GetComponent<RectTransform>();
 
-        startPosition = transform.position; // save initial position
+        // Gravity disabled until space is pressed
+        rb.gravityScale = 0f;
 
-        float cameraZ = Camera.main.transform.position.z;
-        Vector3 leftBound = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, -cameraZ));
-        Vector3 rightBound = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, -cameraZ));
-
-        playerWidth = GetComponent<SpriteRenderer>().bounds.extents.x;
-
-        screenLeftLimit = leftBound.x + playerWidth;
-        screenRightLimit = rightBound.x - playerWidth;
+        // Calculate half-width for edge clamping
+        CircleCollider2D col = GetComponent<CircleCollider2D>();
+        halfWidth = col != null ? col.radius * transform.localScale.x : 0.5f;
     }
 
     void Update()
     {
-        if (!isDropped)
+        float moveX = 0f;
+
+        if (Input.GetKey(KeyCode.A))
+            moveX = -1f;
+        else if (Input.GetKey(KeyCode.D))
+            moveX = 1f;
+
+        movement = new Vector2(moveX, rb.linearVelocity.y);
+
+        // Enable gravity on drop
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            float moveInput = Input.GetAxis("Horizontal");
-            Vector3 newPos = transform.position + Vector3.right * moveInput * moveSpeed * Time.deltaTime;
-
-            newPos.x = Mathf.Clamp(newPos.x, screenLeftLimit, screenRightLimit);
-            transform.position = newPos;
-
-            if (Input.GetKeyUp(KeyCode.Space))
-            {
-                Drop();
-            }
+            rb.gravityScale = 1f; // Only gravity from Rigidbody2D is used now
         }
     }
 
-    public void Drop()
+    void FixedUpdate()
     {
-        isDropped = true;
-        rb.gravityScale = 1f;
-    }
+        // Apply horizontal movement
+        rb.linearVelocity = new Vector2(movement.x * moveSpeed, rb.linearVelocity.y);
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Respawn Player"))
-        {
-            ResetPlayerPosition();
-        }
-    }
+        // Clamp horizontal position inside RectTransform bounds
+        Vector3[] corners = new Vector3[4];
+        movementBounds.GetWorldCorners(corners); // BL, TL, TR, BR
 
-    private void ResetPlayerPosition()
-    {
-        transform.position = startPosition;
-        rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 0;
-        isDropped = false;
+        Vector3 pos = rectTransform.position;
+        float playerWidth = rectTransform.rect.width * rectTransform.lossyScale.x / 2f;
+
+        pos.x = Mathf.Clamp(pos.x, corners[0].x + playerWidth, corners[2].x - playerWidth);
+        rectTransform.position = pos;
     }
 }

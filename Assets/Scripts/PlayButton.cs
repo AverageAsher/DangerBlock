@@ -3,9 +3,18 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    // Call this function from the button's OnClick event
     public void LoadGameScene()
     {
         SceneManager.LoadScene("GameScene");
+    }
+
+    public void LoadGameScene2()
+    {
+        SceneManager.LoadScene("GameScene2");
+    }
+
+    public void LoadGameScene3()
+    {
+        SceneManager.LoadScene("GameScene3");
     }
 }
