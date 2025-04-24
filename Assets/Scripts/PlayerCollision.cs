@@ -18,17 +18,22 @@ public class PlayerCollision : MonoBehaviour
         if (other.CompareTag("AddPoints"))
         {
             points += 10;
-            
+
         }
         else if (other.CompareTag("TakePoints"))
         {
             points -= 50;
-            
+
         }
         else if (other.CompareTag("DoublePoints"))
         {
             points += 100;
-            
+
+        }
+        else if (other.CompareTag("ZeroPoints"))
+        {
+            points = 0;
+
         }
 
         UpdatePointsText();
