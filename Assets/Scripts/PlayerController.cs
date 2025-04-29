@@ -12,12 +12,14 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 startPosition; // store starting position
 
+    private float moveDirection = 0f; // -1 for left, 1 for right, 0 for idle
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 0;
 
-        startPosition = transform.position; // save initial position
+        startPosition = transform.position;
 
         float cameraZ = Camera.main.transform.position.z;
         Vector3 leftBound = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, -cameraZ));
@@ -33,9 +35,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!isDropped)
         {
-            float moveInput = Input.GetAxis("Horizontal");
-            Vector3 newPos = transform.position + Vector3.right * moveInput * moveSpeed * Time.deltaTime;
-
+            // Use button-controlled moveDirection instead of keyboard input
+            Vector3 newPos = transform.position + Vector3.right * moveDirection * moveSpeed * Time.deltaTime;
             newPos.x = Mathf.Clamp(newPos.x, screenLeftLimit, screenRightLimit);
             transform.position = newPos;
 
@@ -52,6 +53,21 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = 1f;
     }
 
+    public void MoveLeft()
+    {
+        moveDirection = -1f;
+    }
+
+    public void MoveRight()
+    {
+        moveDirection = 1f;
+    }
+
+    public void StopMoving()
+    {
+        moveDirection = 0f;
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Respawn Player"))
@@ -66,5 +82,6 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = 0;
         isDropped = false;
+        moveDirection = 0f;
     }
 }
