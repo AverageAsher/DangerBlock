@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition; // store starting position
 
     private float moveDirection = 0f; // -1 for left, 1 for right, 0 for idle
+
+    // Reference to the FadePanel's CanvasGroup
+    public CanvasGroup fadePanel;
 
     void Start()
     {
@@ -29,6 +33,12 @@ public class PlayerController : MonoBehaviour
 
         screenLeftLimit = leftBound.x + playerWidth;
         screenRightLimit = rightBound.x - playerWidth;
+
+        // Make sure the fade panel starts fully transparent
+        if (fadePanel != null)
+        {
+            fadePanel.alpha = 0f;
+        }
     }
 
     void Update()
@@ -78,10 +88,50 @@ public class PlayerController : MonoBehaviour
 
     private void ResetPlayerPosition()
     {
+        // Immediately stop all movement and physics interactions
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic;  // Temporarily disable physics
+
+        StartCoroutine(FadeAndResetPlayer());
+    }
+
+    private IEnumerator FadeAndResetPlayer()
+    {
+        // Fade out the screen (to black)
+        if (fadePanel != null)
+            yield return StartCoroutine(Fade(1f));
+
+        // Optional delay
+        yield return new WaitForSeconds(0.5f);
+
+        // Reset position and state
         transform.position = startPosition;
         rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 0;
+        rb.bodyType = RigidbodyType2D.Dynamic;  // Reactivate physics
+        rb.gravityScale = 0f;                   // Wait until player presses Drop
+
         isDropped = false;
         moveDirection = 0f;
+
+        // Fade back in (to transparent)
+        if (fadePanel != null)
+            yield return StartCoroutine(Fade(0f));
+    }
+
+    private IEnumerator Fade(float targetAlpha)
+    {
+        float startAlpha = fadePanel.alpha;
+        float time = 0f;
+        float duration = 0.5f; // Fast fade
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            fadePanel.alpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
+            yield return null;
+        }
+
+        fadePanel.alpha = targetAlpha;
     }
 }

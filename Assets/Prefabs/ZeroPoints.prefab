@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 477315541098298401}
   - component: {fileID: 8345901881517259162}
   - component: {fileID: -8749076414240893144}
+  - component: {fileID: -7543489430399253782}
   m_Layer: 0
   m_Name: ZeroPoints
   m_TagString: ZeroPoints
@@ -152,3 +153,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-7543489430399253782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2598436595934812647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b66d2532794e01c409271ea719d11177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointType: 1
+  positiveClip: {fileID: 8300000, guid: f44cfa10814df6c48b8a87fb6ee7f876, type: 3}
+  negativeClip: {fileID: 8300000, guid: 2e36e8d965b26854290cf71eb533550b, type: 3}

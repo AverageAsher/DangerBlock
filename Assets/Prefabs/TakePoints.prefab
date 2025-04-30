@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -2577959947278499451}
   - component: {fileID: 4982142834090123450}
   - component: {fileID: 1994999079264982167}
+  - component: {fileID: 3955316016299759189}
   m_Layer: 0
   m_Name: TakePoints
   m_TagString: TakePoints
@@ -178,3 +179,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3955316016299759189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7294998600493777142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b66d2532794e01c409271ea719d11177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointType: 1
+  positiveClip: {fileID: 8300000, guid: f44cfa10814df6c48b8a87fb6ee7f876, type: 3}
+  negativeClip: {fileID: 8300000, guid: 2e36e8d965b26854290cf71eb533550b, type: 3}
