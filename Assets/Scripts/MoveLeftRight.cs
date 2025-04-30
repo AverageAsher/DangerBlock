@@ -32,9 +32,19 @@ public class MoveLeftRightBounce : MonoBehaviour
         float newY = startY + Mathf.Sin(Time.time * bounceSpeed) * bounceHeight;
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
-        // Clamp within camera bounds
-        float screenLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 0)).x + halfWidth;
-        float screenRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, 0)).x - halfWidth;
+        // Ensure the camera exists
+        if (Camera.main == null)
+        {
+            Debug.LogError("MainCamera not found! Make sure your camera is tagged as MainCamera.");
+            return;
+        }
+
+        // Get correct Z distance from camera to object
+        float cameraZ = Camera.main.WorldToViewportPoint(transform.position).z;
+
+        // Clamp within camera bounds using correct Z distance
+        float screenLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, cameraZ)).x + halfWidth;
+        float screenRight = Camera.main.ViewportToWorldPoint(new Vector3(1, 0, cameraZ)).x - halfWidth;
 
         // Edge detection and snapping fix
         if (transform.position.x <= screenLeft)
