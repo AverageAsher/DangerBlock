@@ -61,7 +61,8 @@ public class PlayerCollision : MonoBehaviour
     public void ResetPoints()
     {
         points = 0;
-        SavePoints();  // Save the reset points
+        PlayerPrefs.SetInt("Level" + currentLevel + "Points", 0);
+        PlayerPrefs.Save();
         UpdatePointsText();
     }
 }
